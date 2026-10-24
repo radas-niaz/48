@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CEC Midterm Practice Quiz</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#5b6573;--bd:#d8dde4;--ac:#1a5fb4;--ok:#1b7f3b;--okb:#e3f4e8;--no:#b3261e;--nob:#fbe9e7;--wa:#8a5a00;--wab:#fff3d6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171b;--card:#1d2127;--tx:#e8eaed;--mu:#9aa4b2;--bd:#323943;--ac:#7ab0ff;--ok:#6fd58c;--okb:#17301f;--no:#ff8a80;--nob:#3a1d1a;--wa:#ffd27a;--wab:#3a2f12;color-scheme:dark}}
+html,body{height:auto}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:.2em 0}.mu{color:var(--mu)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px;margin:14px 0}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:2px 10px;border-radius:99px;background:var(--bd);color:var(--tx)}
+button{font:inherit;padding:10px 16px;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer}
+button.sec{background:transparent;color:var(--ac)}button:disabled{opacity:.5;cursor:default}
+input,select{font:inherit;padding:9px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);max-width:100%}
+label{display:block;font-size:.85rem;color:var(--mu);margin:10px 0 3px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.bar{height:6px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+.fb{margin-top:14px;padding:12px;border-radius:8px;white-space:pre-wrap}
+.ok{background:var(--okb);color:var(--ok)}.no{background:var(--nob);color:var(--no)}.wa{background:var(--wab);color:var(--wa)}
+.hint{margin-top:10px;padding:10px;border-left:4px solid var(--ac);background:var(--bg)}
+.q{font-size:1.1rem;margin:10px 0}
+.rev{border-top:1px solid var(--bd);padding:10px 0}
+.sc{font-size:2.4rem;font-weight:700}
+</style></head><body><div class="w" id="app"></div>
+<script>
+const $=id=>document.getElementById(id);
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[ri(0,a.length-1)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=ri(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ---------- SEARCH AND FIND BANK: [question, rule, subrule, explanation, index hint] ---------- */
+const SF=[
+["Define the term concealed. (Q1)","0","","Section 0 definition: rendered permanently inaccessible by the structure or finish of the building.","Index: “Concealed, definition of”"],
+["When wiring a building, is it permissible to render electrical work inaccessible prior to inspection? (Q2)","2-028","","No. Work can’t be covered by lathing, boarding or other construction until the inspection department has accepted it.","Index: “Inspection” or “Availability of work for inspection”"],
+["Shall temperature limitations, for the maximum allowable ampacity of a conductor, be based on the temperature rating of the equipment or the temperature rating of the conductor? (Q3)","4-006","1)","Based on the equipment: use the Table column matching the equipment’s marked termination temperature.","Index: “Temperature limitations”"],
+["In a single phase, 3-wire system, which conductor is to be grounded? (Q5)","10-208","1)b)","The mid-phase conductor (the identified neutral).","Index: “Grounding, conductor of ac system to be grounded”"],
+["Shall flexible tinsel cord be permitted to be No. 27 AWG copper? (Q7)","4-010","a)","Yes. Tinsel cord is the exception to the No. 18 AWG minimum.","Index: “Flexible cord, sizes of”"],
+["When a raceway or cable enters a building through an outer wall or roof, what must be done to the opening? (Q8)","12-018","","It must be filled to prevent infiltration of moisture.","Index: “Entry of raceways and cables into buildings”"],
+["Shall electrical equipment be installed and guarded so that adequate provision is made for the safety of persons and property? (Q9)","2-200","","Yes. General rule on guarding for safety.","Index: “Guarding” or “Safety of persons and property”"],
+["Can a green coloured conductor sometimes be used as a circuit conductor? (Q10)","4-032","2)","No. Green (or green/yellow) conductors shall be used only as grounding or bonding conductors.","Index: “Identification of conductors” or “Green”"],
+["Are you required to equipotential bond all interior metal gas piping systems of a building supplied with electrical power? (Q11)","10-700","c)","Yes. The continuous metal gas piping system must be made equipotential.","Index: “Equipotential bonding”"],
+["Shall PVC raceways exposed to direct rays of the sun be specifically approved for the purpose and be so marked? (Q13)","2-136","1)","Yes. Totally enclosed non-metallic raceways exposed to the sun must be marked for the purpose.","Index: “Sunlight resistance”"],
+["Is it necessary to install electrical equipment so that the parts that have to be maintained are accessible? (Q14)","2-122","","Yes. There must be ready access to nameplates and parts requiring maintenance.","Index: “Installation of electrical equipment” or “Accessibility”"],
+["Give three pieces of information that must be marked on the nameplate of electrical equipment. (Q15)","2-100","1)","Examples: maker’s name, catalogue number or type, voltage, rated load amperes, watts/VA/hp, ac/dc, phases, frequency.","Index: “Marking of equipment”"],
+["Where practicable, shall the connection to the grounding electrode be accessible? (Q16)","10-118","2)","Yes.","Index: “Grounding conductor connection to electrodes”"],
+["What is the minimum length of conductors to be left at each outlet box for making connections? (Q17)","12-3000","6)","At least 150 mm of free insulated conductor.","Index: “Outlet boxes”"],
+["Is it permissible to permanently secure flexible cord to a structural member? (Q28)","12-402","3)a)i)","No. Flexible cord shall not be permanently secured to any structural member.","Index: “Flexible cord, uses of”"],
+["Is it necessary for the bonding conductor, for connection to a devices bonding terminal, be installed in such a manner that removal of the device will not interfere with bonding conductor continuity? (Q29)","10-614","5)","Yes. Removal of the device shall not interrupt bonding continuity.","Index: “Bonding conductor connection to equipment”"],
+["Can sectional boxes be embedded in concrete? (Q30)","12-3008","2)","No. Sectional boxes shall not be embedded in concrete or masonry construction.","Index: “Boxes in concrete construction”"],
+["In a residential building where you are using the metal water piping system as your grounding electrode, are you allowed to connect your grounding conductor to it with a bolted clamp? (Q31)","10-118","1)a)","Yes. A bolted clamp is the first method listed for connecting to a grounding electrode.","Index: “Grounding conductor connection to electrodes”"],
+["Insulated bushings shall be used when what AWG size of insulated conductors issue from a raceway? (Q32)","12-906","2)","No. 8 AWG or larger.","Index: “Protection of conductors at ends of raceways”"],
+["What is the maximum temperature that rigid PVC conduit can be subjected to? (Q33)","12-1104","1)","75 °C.","Index: “PVC conduit, temperature limitations”"],
+["When installing 35 trade size rigid metal conduit, what is the maximum distance between supports? (Q36)","12-1010","1)b)","2 m (27 and 35 trade size).","Index: “Conduit supports, spacing”"],
+["What is the minimum depth below finished grade required for part of a buildings infrastructure to be buried so it may considered an in-situ grounding electrode? (Q42)","10-102","4)","600 mm or more below finished grade.","Index: “Grounding electrodes”"],
+["Must unused openings in boxes be sealed? (Q43)","12-3024","","Yes. They shall be effectively closed by plugs or plates.","Index: “Unused openings in boxes”"],
+["Shall neutral conductors have sufficient ampacity to carry the unbalanced load? (Q44)","4-018","1)","Yes.","Index: “Neutral conductor, size of”"],
+["Is soapstone an approved wire pulling lubricant for insulated conductors? (Q46)","12-908","2)","Yes. Pulling compound, talc or soapstone.","Index: “Inserting conductors in raceways”"],
+["Boxes having any dimension greater than 100 mm, shall be secured on how many sides? (Q47)","12-3010","3)","At least two sides (or to metal supports / 19 mm boards).","Index: “Outlet box supports”"]
+];
+
+/* ---------- TABLE DATA (CSA C22.1:24) ---------- */
+const SZ=['14','12','10','8','6','4','3','2','1','1/0','2/0','3/0','4/0'];
+// Table D3 copper K: [cable 90%pf, cable 80%pf, raceway 90%pf, raceway 80%pf]
+const K={'14':[9.92,9.67,10,9.67],'12':[6.25,6.1,6.26,6.11],'10':[3.96,3.87,3.96,3.87],'8':[2.5,2.45,2.51,2.45],'6':[1.58,1.55,1.58,1.55],'4':[1.01,.987,1.01,1],'3':[.797,.787,.801,.792],'2':[.636,.629,.639,.635],'1':[.512,.509,.516,.515],'1/0':[.41,.409,.414,.415],'2/0':[.331,.332,.335,.338],'3/0':[.267,.27,.271,.275],'4/0':[.217,.221,.221,.226]};
+// Table 2 copper ampacity (first 9 sizes) by temp column
+const AMP={60:[15,20,30,40,55,70,85,95,110],75:[20,25,35,50,65,85,100,115,130],90:[25,30,40,55,75,95,115,130,145]};
+const T5A={60:{35:.91,40:.82,45:.71,50:.58,55:.41},75:{35:.94,40:.88,45:.82,50:.75,55:.67},90:{35:.96,40:.91,45:.87,50:.82,55:.76}};
+const T5C=n=>n<=3?1:n<=6?.8:n<=24?.7:n<=42?.6:.5;
+// Table 6A area per conductor (mm2)
+const AR={'14':8.87,'12':11.6,'10':15.7,'8':28.2,'6':38.0,'4':52.5,'3':62.0,'2':73.9,'1':99.1,'1/0':119,'2/0':142,'3/0':171,'4/0':207};
+// Table 9A conduit areas (mm2)
+const TS=['16','21','27','35','41','53','63','78'];
+const CON={'EMT':[186,330,539,940,1288,2132,3783,5701],'rigid metal conduit (RMC)':[202,354,573,985,1336,2199,3139,4839],'rigid PVC conduit':[167,307,507,792,1140,2027,2951,4560]};
+// Table 22 / 23
+const V22={'14':24.6,'12':28.7};
+const DEV=[['3 x 2 x 1-1/2 device box',131],['3 x 2 x 2 device box',163],['3 x 2 x 2-1/2 device box',204],['3 x 2 x 3 device box',245],['4 x 2-1/8 x 1-7/8 device box',229],['4 x 2-3/8 x 1-7/8 device box',262]];
+const OCT=[['Octagonal 4 x 1-1/2',{14:10,12:8}],['Octagonal 4 x 2-1/8',{14:14,12:12}]];
+const SQ=[['Square 4 x 1-1/2',{14:14,12:12}],['Square 4 x 2-1/8',{14:20,12:17}],['Square 4-11/16 x 2-1/8',{14:28,12:24}]];
+const f2=x=>Math.round(x*100)/100;
+
+/* ---------- CALC QUESTIONS (from the practice pages) ---------- */
+const GANG=[1,2,3,4].map(x=>x+' gang 3 x 2 x 3 sectional device box');
+const SQL=SQ.map(x=>x[0]),OCL=OCT.map(x=>x[0]);
+const VD=[
+{cat:'Voltage drop (Table D3) · Q19',text:'Using Table D3, determine the maximum distance a #8 RW90XLPE copper conductor, installed in raceway, can be run to supply a 32 A load on a 120/240 V, 1Ø branch circuit. (Use 80% pf.)',
+ fields:[{t:'num',label:'Maximum distance (m)',ans:46,tol:1.01,alt:[23]}],
+ why:'Raceway, 80% pf, #8: K = 2.45. VD allowed = 3% × 240 = 7.2 V.\nL = (7.2 × 1000) ÷ (2.45 × 2 × 32) = 45.9 m, about 46 m.\n(If your instructor treats the load as 120 V, L = 22.96 m, about 23 m.)\nRefs: Rule 8-102 1)a), Table D3.'},
+{cat:'Voltage drop (Table D3) · Q20',text:'Using the voltage drop formula, calculate the minimum size of conductors required for the following: 24 A, 240 V, 1Ø branch circuit load, using a TECK90 copper cable, 62 metres from the source.',
+ fields:[{t:'select',label:'Conductor size (AWG)',opts:SZ.map(z=>'#'+z),ans:'#6'}],
+ why:'Max K = (0.03 × 240 × 1000) ÷ (2 × 24 × 62) = 7200 ÷ 2976 = 2.42.\nCable column of Table D3: #8 is 2.5 (90% pf) or 2.54 (100% pf), both too high. #6 = 1.58 → OK.\nRefs: Rule 8-102 1)a), Table D3.'},
+{cat:'Voltage drop (Table D3) · Q39',text:'Using the voltage drop table D3 from the code book. What size of copper cable is required to run 197 m, 33 A load 240 V single phase? (Use 80% pf.)',
+ fields:[{t:'select',label:'Conductor size (AWG)',opts:SZ.map(z=>'#'+z),ans:'#1'}],
+ why:'Max K = (0.03 × 240 × 1000) ÷ (2 × 33 × 197) = 7200 ÷ 13 002 = 0.554.\nCable, 80% pf: #2 = 0.629 (too high), #1 = 0.509 → OK.\nRefs: Rule 8-102 1)a), Table D3.'},
+{cat:'Voltage drop (Table D3) · Q40',text:'Using the voltage drop formula. What is the max distance #8 NMD90 copper cable, 32 A load 120/240 single phase?',
+ fields:[{t:'num',label:'Maximum distance (m)',ans:44,tol:2.01,alt:[42,22,21]}],
+ why:'Cable, #8, no pf given so use 100% pf: K = 2.54. VD allowed = 0.03 × 240 = 7.2 V.\nL = 7200 ÷ (2.54 × 2 × 32) = 44.3 m.\n(Using the 90 °C multiplier of 1.05 gives about 42 m; a 120 V basis gives about half. Check which your instructor used.)\nRefs: Rule 8-102 1)a), Table D3.'}];
+const AM=[
+{cat:'Ampacity · Q21',text:'What is the maximum allowable ampacity of 9 - #14 R90XLPE 600 V unjacketed copper conductors installed in a 21 trade size conduit? (Conductors supply 3 – 120/240 V, 1Ø multi-wire branch circuits)',
+ fields:[{t:'num',label:'Ampacity (A)',ans:20,tol:0.15,alt:[17.5]}],
+ why:'Each 3-wire circuit has a neutral that carries only unbalanced current, so the 3 neutrals are not counted: 6 conductors. Table 5C (4–6) = 0.80.\nTable 2, 90 °C, #14 = 25 A. 25 × 0.80 = 20 A.\n(If the neutrals were counted: 9 conductors → 0.70 → 17.5 A.)\nRefs: Rule 4-004 3), Tables 2 and 5C.'},
+{cat:'Ampacity · Q26',text:'What is the ampacity of the following ungrounded copper conductors which share the same tubing and are placed in a location where the ambient temperature is 52 °C?\n6 - #8 TW\n6 - #4 RW75 XLPE 600 V unjacketed\n3 - #12 RW90 XLPE 600 V unjacketed\n1 - #6 RW90 XLPE 600 V unjacketed',
+ fields:[{t:'num',label:'#8 TW (A)',ans:11.48,tol:0.15},{t:'num',label:'#4 RW75 (A)',ans:39.87,tol:0.15},{t:'num',label:'#12 RW90 (A)',ans:15.96,tol:0.15},{t:'num',label:'#6 RW90 (A)',ans:39.9,tol:0.15}],
+ why:'16 conductors → Table 5C (7–24) = 0.70. Ambient 52 °C → use 55 °C row of Table 5A.\n#8 TW: Table 2 60 °C = 40 × 0.70 × 0.41 = 11.48 A\n#4 RW75: 75 °C = 85 × 0.70 × 0.67 = 39.87 A\n#12 RW90: 90 °C = 30 × 0.70 × 0.76 = 15.96 A\n#6 RW90: 90 °C = 75 × 0.70 × 0.76 = 39.90 A\nRefs: Rule 4-004, Tables 2, 5A, 5C.'},
+{cat:'Ampacity · Q38',text:'What is the maximum allowable ampacity of 26 - #10 R90XLPE 600 V unjacketed copper conductors installed in the same conduit? The conduit is installed in an ambient temperature of 47 °C. (Conductors supply 13 – 240 V, 1Ø multi-wire branch circuits)',
+ fields:[{t:'num',label:'Ampacity (A)',ans:19.68,tol:0.15}],
+ why:'26 conductors → Table 5C (25–42) = 0.60. Ambient 47 °C → use 50 °C row, 90 °C column of Table 5A = 0.82.\nTable 2, 90 °C, #10 = 40 A. 40 × 0.60 × 0.82 = 19.68 A.\nRefs: Rule 4-004, Tables 2, 5A, 5C.'},
+{cat:'Ampacity · Q48',text:'What is the ampacity of 8 - #12 RW90 XLPE copper conductors contained in the same raceway and installed in an ambient temperature of 35 °C? (Conductors supply 4 – 120 V, 1Ø branch circuits)',
+ fields:[{t:'num',label:'Ampacity (A)',ans:20.16,tol:0.15}],
+ why:'4 two-wire circuits, neutrals carry full current, so all 8 count. Table 5C (7–24) = 0.70. Table 5A, 35 °C, 90 °C column = 0.96.\nTable 2, 90 °C, #12 = 30 A. 30 × 0.70 × 0.96 = 20.16 A.\nRefs: Rule 4-004 4), Tables 2, 5A, 5C.'}];
+const RW=[
+{cat:'Raceway fill · Q22',text:'What minimum size of electric metallic tubing (EMT) is required for the following stranded copper conductors when all of the conductors are installed in the same raceway?\n2 - #3/0 RW90XLPE 600 V unjacketed\n1 - #6 RW90XLPE 600 V unjacketed',
+ fields:[{t:'select',label:'Minimum EMT trade size',opts:TS,ans:'41'}],
+ why:'Table 6A: 2 × 171 + 38.0 = 380 mm². 3 conductors → 40% (Table 8). Needed = 380 ÷ 0.40 = 950 mm².\nTable 9A EMT: 35 = 940 (too small), 41 = 1288 → 41 trade size.\nRefs: Rule 12-910, Tables 6A, 8, 9A.'},
+{cat:'Raceway fill · Q23',text:'Determine the size of rigid PVC conduit required for the following stranded copper conductors to be installed in the same conduit?\n3 - #3 RW90XLPE 600 V unjacketed\n1 - #8 RW90XLPE 600 V unjacketed',
+ fields:[{t:'select',label:'Minimum rigid PVC trade size',opts:TS,ans:'35'}],
+ why:'Table 6A: 3 × 62.0 + 28.2 = 214.2 mm². 4 conductors → 40%. Needed = 214.2 ÷ 0.40 = 535.5 mm².\nTable 9A rigid PVC: 27 = 507 (too small), 35 = 792 → 35 trade size.\nRefs: Rule 12-910, Tables 6A, 8, 9A.'},
+{cat:'Raceway fill · Q45',text:'What is the maximum number of #12 - R90XLPE 600 V unjacketed stranded copper conductors that you can install in 21 trade size (3/4") electric metallic tubing?',
+ fields:[{t:'num',label:'Max number of conductors',ans:11,tol:0.01}],
+ why:'Table 9A EMT 21 = 330 mm². 40% = 132 mm². Table 6A #12 = 11.6 mm². 132 ÷ 11.6 = 11.4 → 11 conductors.\nRefs: Rule 12-910, Tables 6A, 8, 9A.'}];
+const BX=[
+{cat:'Box fill · Q4',text:'How many #12 R90XLPE 600 V unjacketed conductors can be installed in a 3" x 2" x 3" device box?',
+ fields:[{t:'num',label:'Number of #12 conductors',ans:8,tol:0.01}],
+ why:'Table 23: 3 x 2 x 3 device box (245 mL) holds 8 conductors of #12.\nRefs: Rule 12-3034 2), Table 23.'},
+{cat:'Box fill · Q24',text:'What is the minimum size of octagonal box required when installing 3 - #14/3 NMD90 copper cables with 5 wire connectors and 2 pigtails?',
+ fields:[{t:'num',label:'Equivalent number of #14 conductors',ans:13,tol:0.01},{t:'select',label:'Minimum octagonal box',opts:OCL,ans:OCL[1]}],
+ why:'Cable conductors: 3 × 3 = 9 (bare ground not counted). Pigtails: 2. Connectors: 5 → 2 pairs = 2.\nTotal = 13 × #14. Table 23: Octagonal 4 x 1-1/2 holds 10 (too small); 4 x 2-1/8 holds 14 → OK.\nRefs: Rule 12-3034 1), 2); Table 23.'},
+{cat:'Box fill · Q25',text:'Calculate the minimum size of device box to contain the following:\n8 - #14 conductors\n3 - #12 conductors\n4 - wire connectors\n1 - duplex receptacle\n2 - 3-way switches\nWhat size of sectional device box is required to gang together and accommodate this volume? (Use 3 x 2 x 3 sectional boxes at 245 mL each.)',
+ fields:[{t:'num',label:'Volume (mL)',ans:512.5,tol:1.5},{t:'select',label:'Ganged box',opts:GANG,ans:GANG[2]}],
+ why:'Table 22: 8 × 24.6 = 196.8 mL (#14); 3 × 28.7 = 86.1 mL (#12).\nDevices: 3 × 2 = 6 conductors of the largest size (#12) = 172.2 mL. Connectors: 4 → 2 pairs × 28.7 = 57.4 mL.\nTotal = 512.5 mL. Two gangs = 490 mL (too small), three gangs = 735 mL → 3 gang.\nRefs: Rule 12-3034 2), 4), 6); Tables 22, 23.'},
+{cat:'Box fill · Q27',text:'A device box contains the following:\n2 - 14/2 NMD90 copper cable\n2 - 14/3 NMD90 copper cable\n3 - wire connector\n1 - Single pole switch\n2 - 3-way switch\n6 - Pigtails\na) What is the equivalent number of conductors?\nb) What size of device box is required? (Gang 3 x 2 x 3 sectional boxes at 245 mL each if needed.)',
+ fields:[{t:'num',label:'a) Equivalent number of #14 conductors',ans:23,tol:0.01},{t:'select',label:'b) Box required',opts:GANG,ans:GANG[2]}],
+ why:'Cables: 2×2 + 2×3 = 10. Pigtails: 6. Devices: 3 × 2 = 6. Connectors: 3 → 1 pair = 1. Total = 23.\n23 × 24.6 = 565.8 mL. Two gangs = 490 mL (too small), three = 735 mL → 3 gang.\nRefs: Rule 12-3034 1), 2), 6); Tables 22, 23.'},
+{cat:'Box fill · Q35',text:'What size of square box is required to splice 2 - #8/3 NMD90 cables together, using 4 wire connectors?',
+ fields:[{t:'num',label:'Equivalent number of #8 conductors',ans:8,tol:0.01},{t:'select',label:'Minimum square box',opts:SQL,ans:SQL[1]}],
+ why:'Cable conductors: 2 × 3 = 6. Connectors: 4 → 2 pairs = 2. Total = 8 × #8.\nTable 23, #8: Square 4 x 1-1/2 holds 7 (too small); 4 x 2-1/8 holds 10 → OK.\nRefs: Rule 12-3034 1), 2); Table 23.'}];
+
+/* ---------- QUIZ ENGINE ---------- */
+let Q=[],idx=0,score=0,log=[],hinted=false;
+const norm=s=>String(s).toLowerCase().replace(/[\s().]/g,'');
+const nrule=s=>String(s).toLowerCase().replace(/\s/g,'').replace(/[–—−]/g,'-');
+function build(){
+  const s=shuf(SF).slice(0,12).map(x=>({cat:'Search and find',sf:true,text:x[0],rule:x[1],sub:x[2],why:x[3],hint:x[4]}));
+  const c=[].concat(...[VD,AM,RW,BX].map(l=>shuf(l).slice(0,2)));
+  Q=shuf(s.concat(c));idx=0;score=0;log=[];
+}
+function home(){
+  $('app').innerHTML=`<h1>CEC Midterm Practice Quiz</h1><p class="mu">ELEC-1051 Residential Electrical Code 1 · based on CSA C22.1:24 (Part I, 26th edition)</p>
+  <div class="card"><b>20 random questions</b><ul><li>12 search and find (Sections 0, 2, 4, 8, 10, 12): give the rule number and subrule</li><li>2 voltage drop using Table D3</li><li>2 ampacity calculations</li><li>2 raceway fill</li><li>2 box fill</li></ul>
+  <p class="mu">All questions come from your Module 5 midterm review pages (66–72). Calculation questions use the same numbers as the practice sheet.</p><p class="mu">Rule format: <b>12-3000</b>, subrule: <b>6)</b> or <b>1)b)</b>. Leave subrule blank if the rule has no subrule. Section 0 answers: type <b>0</b>.</p>
+  <button onclick="start()">Start quiz</button></div>`;
+}
+function start(){build();show()}
+function show(){
+  const q=Q[idx];hinted=false;
+  let f='';
+  if(q.sf){
+    f=`<label>Rule number (e.g. 12-3000)</label><input id="f0" autocomplete="off" autocapitalize="off">
+    <label>Subrule (e.g. 6) or 1)b), blank if none)</label><input id="f1" autocomplete="off" autocapitalize="off">`;
+  }else q.fields.forEach((x,i)=>{
+    f+=`<label>${x.label}</label>`+(x.t==='select'?`<select id="f${i}"><option value="">Choose…</option>${x.opts.map(o=>`<option>${o}</option>`).join('')}</select>`:`<input id="f${i}" inputmode="decimal" autocomplete="off">`);
+  });
+  $('app').innerHTML=`<div class="bar"><i style="width:${idx/20*100}%"></i></div>
+  <p class="mu">Question ${idx+1} of 20 · Score so far: ${score}</p>
+  <div class="card"><span class="tag">${q.cat}</span><div class="q" style="white-space:pre-wrap">${q.text}</div>${f}
+  <div class="row" id="btns"><button id="sub" onclick="check()">Submit</button>${q.sf?'<button class="sec" onclick="hint()">Hint</button>':''}</div>
+  <div id="hint"></div><div id="out"></div></div>`;
+  $('f0').focus();
+}
+function hint(){$('hint').innerHTML=`<div class="hint">🔎 ${Q[idx].hint}</div>`}
+function ok(x,v){
+  if(x.t==='select')return v===String(x.ans);
+  const n=parseFloat(v);return !isNaN(n)&&[x.ans].concat(x.alt||[]).some(a=>Math.abs(n-a)<=x.tol);
+}
+function check(){
+  const q=Q[idx];let pts=0,msg='',ans='';
+  if(q.sf){
+    const r=nrule($('f0').value),s=norm($('f1').value);
+    const rr=q.rule==='0'?['0','section0','definitions','section0definitions'].includes(r):r===nrule(q.rule);
+    const sr=s===norm(q.sub);
+    pts=(rr?.5:0)+(sr?.5:0);
+    ans=`Answer: ${q.rule==='0'?'Section 0 (Definitions)':'Rule '+q.rule}${q.sub?' '+q.sub:' (no subrule)'}\n${q.why}`;
+    msg=pts===1?'Correct':pts===.5?(rr?'Right rule, subrule not right':'Subrule matches, rule number not right'):'Not quite';
+  }else{
+    let g=0;q.fields.forEach((x,i)=>{if(ok(x,$('f'+i).value.trim()))g++});
+    pts=g/q.fields.length;
+    ans=`Answer: ${q.fields.map(x=>x.label+' = '+x.ans).join(' · ')}\n\n${q.why}`;
+    msg=pts===1?'Correct':pts>0?'Partly correct':'Not quite';
+  }
+  score+=pts;log.push({q,pts,ans});
+  $('sub').disabled=true;
+  $('out').innerHTML=`<div class="fb ${pts===1?'ok':pts>0?'wa':'no'}"><b>${msg}</b>\n${ans}</div>
+  <div class="row"><button onclick="next()">${idx===19?'See results':'Next question'}</button></div>`;
+}
+function next(){idx++;idx>=20?done():show()}
+function done(){
+  const pct=Math.round(score/20*100),miss=log.filter(l=>l.pts<1);
+  $('app').innerHTML=`<h1>Results</h1><div class="card"><div class="sc">${score%1?score.toFixed(1):score} / 20 (${pct}%)</div>
+  <p class="mu">${pct>=80?'Strong. Keep drilling the ones you missed.':pct>=60?'Getting there. Practise the missed categories.':'Keep at it. Go back through the index and tables.'}</p>
+  <div class="row"><button onclick="start()">New random quiz</button><button class="sec" onclick="home()">Home</button></div></div>
+  <div class="card"><b>Review: ${miss.length} to look at</b>${miss.map(l=>`<div class="rev"><span class="tag">${l.q.cat}</span><div style="white-space:pre-wrap;margin:6px 0">${l.q.text}</div><div class="mu" style="white-space:pre-wrap">${l.ans}</div></div>`).join('')||'<p>Perfect score, nothing to review.</p>'}</div>`;
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){const s=$('sub'),n=document.querySelector('#out button');if(n)n.click();else if(s&&!s.disabled)s.click()}});
+home();
+</script></body></html>
